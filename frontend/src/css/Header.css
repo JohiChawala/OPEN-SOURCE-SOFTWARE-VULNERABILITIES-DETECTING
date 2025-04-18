@@ -1,0 +1,58 @@
+.tinker-header {
+  background-color: #0078D7;
+  color: white;
+  padding: 0.5rem 1rem;
+  z-index: 1000;
+  position: relative;
+}
+
+.tinker-logo {
+  height: 35px;
+}
+
+.tinker-brand {
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: white;
+}
+
+.tinker-nav-links .nav-link {
+  color: white !important;
+  font-weight: 500;
+  font-size: 20px;
+  margin: 0 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+
+.btn-outline-light,
+.btn-light {
+  border-radius: 20px;
+  font-weight: 500;
+  padding: 4px 12px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 991px) {
+  .tinker-nav-links {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+}
+
+
+
+/* Hover style (darker blue) */
+.tinker-nav-links .nav-link:hover,
+.tinker-nav-links .hovered-link {
+  background-color: #005bb5; /* darker blue */
+  border-radius: 5px;
+  padding: 5px 10px;
+  color: #fff !important;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+
+

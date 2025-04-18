@@ -1,0 +1,29 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 15vh;
+}
+
+.page-content {
+  flex: 1;
+}
+
+.footer {
+  background-color: #0078D7;
+  color: white;
+  text-align: center;
+  font-size: 14px;
+  padding: 15px 0;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+

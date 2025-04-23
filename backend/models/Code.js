@@ -11,8 +11,29 @@ const CodeSchema = new mongoose.Schema({
     required: true,
   },
   result: {
-    type: String,
-    required: true,
+    label: Number,
+    total: Number,
+    vulnerabilities: [
+      {
+        cve_id: String,
+        description: String,
+        line_number: Number,
+      }
+    ],
+    analysis_time_sec: Number,
+    lines_analyzed: Number,
+  },
+  errorCount: {
+    type: Number,
+    required: false,
+  },
+  linesAnalyzed: {
+    type: Number,
+    required: false,
+  },
+  analysisTime: {
+    type: Number, // in seconds
+    required: false,
   },
   timestamp: {
     type: Date,

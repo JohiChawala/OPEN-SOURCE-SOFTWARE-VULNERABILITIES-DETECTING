@@ -8,7 +8,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate(); // Initialize useNavigate
-  const [name, setName] = useState('');
     
   const { login } = useAuth(); // ✅ Get login function from context
 
@@ -28,8 +27,11 @@ const Login = () => {
       if (response.ok) {
         // Login successful
         console.log('Login successful:', data);
-        const user = { name, email }; // Build user object manually
-        login(user); // Update auth context
+        //const user = { name, email }; // Build user object manually
+        login({
+          userId: data.userId,
+          name: data.name,
+        });// Update auth context
         navigate('/codeanalyzer'); // Redirect to home page or dashboard
       } else {
         // Login failed
@@ -74,14 +76,26 @@ const Login = () => {
             </Form.Group>
 
             <div className="d-grid mb-3">
+              
               <Button variant="success" type="submit">
                 log In
               </Button>
             </div>
 
-            <a href="#forgot-password" className="text-primary text-decoration-underline">
-              Forgot Password?
-            </a>
+            <div className="text-center mt-2">
+              <a href="#forgot-password" className="d-block mb-2 text-decoration-underline text-primary">
+                Forgot Password?
+              </a>
+              <span>
+                Don't have an account?{' '}
+                <span
+                  onClick={() => navigate('/signup')}
+                  style={{ color: '#0d6efd', cursor: 'pointer', textDecoration: 'underline' }}
+                >
+                  Create New Account
+                </span>
+              </span>
+            </div>
           </Form>
         </Col>
       </Row>

@@ -10,7 +10,7 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { login } = useAuth(); // ✅ Get login function from context
+  const { signup } = useAuth(); // ✅ Get login function from context
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -33,8 +33,12 @@ const Signup = () => {
         console.log('Signup successful:', JSON.stringify(data, null, 2));
 
 
-        const user = { name, email }; // Build user object manually
-        login(user); // Update auth context
+        // const user = { name, email }; // Build user object manually
+        // login(user); // Update auth context
+        signup({
+          userId: data.userId,
+          name: data.name,
+        });
         // ✅ Redirect to home page
         navigate('/');
       } else {

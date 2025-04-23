@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import AnalysisResults from './AnalysisResults';
 import { Container, Form, Button, Row, Col, Spinner } from 'react-bootstrap';
 
 const CodeAnalyzer = () => {
@@ -9,33 +10,53 @@ const CodeAnalyzer = () => {
 
   const [code, setCode] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState('');
+  const [analysisResult, setAnalysisResult] = useState(null);
   const [analysisTime, setAnalysisTime] = useState(null);
+  const [linesAnalyzed, setLinesAnalyzed] = useState(0);
+  const [timer, setTimer] = useState(0);
+  const [, setIntervalId] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsAnalyzing(true);
+    setTimer(0);
+
+    const id = setInterval(() => {
+      setTimer((prev) => prev + 1);
+    }, 1000);
+    setIntervalId(id);
+
     const startTime = performance.now();
 
     try {
-      const result = analyzeCode(code);
+      const result = await analyzeCode(code);
       const endTime = performance.now();
-      setAnalysisTime(((endTime - startTime) / 1000).toFixed(2));
+      const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+
+      setAnalysisTime(timeTaken);
       setAnalysisResult(result);
+      setLinesAnalyzed(code.split('\n').length); // ✅ Lines analyzed
       await handleSaveCode(code, result);
     } catch (err) {
-      console.error('Error analyzing code:', err);
-      alert('An error occurred. Please try again.');
+      console.error("Error analyzing code:", err);
+      alert("An error occurred: " + err.message);
     } finally {
+      clearInterval(id);
+      setIntervalId(null);
       setIsAnalyzing(false);
     }
   };
 
-  const analyzeCode = (code) => {
-    const vulnerabilities = Math.floor(Math.random() * 5);
-    return vulnerabilities > 0
-      ? `Vulnerabilities detected: ${vulnerabilities}`
-      : 'No vulnerabilities detected';
+  const analyzeCode = async (code) => {
+    const response = await fetch("http://localhost:8000/analyze-code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code }),
+    });
+
+    if (!response.ok) throw new Error("Failed to analyze code");
+
+    return await response.json();
   };
 
   const handleSaveCode = async (code, result) => {
@@ -53,7 +74,7 @@ const CodeAnalyzer = () => {
         alert(data.message || 'Failed to save code');
       }
     } catch (err) {
-      console.error('Error:', err);
+      console.error('Error saving code:', err);
       alert('An error occurred. Please try again.');
     }
   };
@@ -85,23 +106,45 @@ const CodeAnalyzer = () => {
         <Col md={8}>
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="codeInput" className="mb-3">
-              <Form.Label className="visually-hidden">Code Input</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={8}
-                placeholder="Paste your code here."
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                aria-label="Code input area"
-                required
-                style={{
-                  border: '2px solid #0d6efd',
-                  borderRadius: '10px',
-                  transition: 'all 0.3s ease',
-                  boxShadow: isAnalyzing ? '0px 0px 8px #0d6efd' : 'none',
-                }}
-              />
+              <div style={{ position: 'relative' }}>
+                <Form.Control
+                  as="textarea"
+                  rows={8}
+                  placeholder="Paste your code here."
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  required
+                  style={{
+                    border: '2px solid #0d6efd',
+                    borderRadius: '10px',
+                    transition: 'all 0.3s ease',
+                    boxShadow: isAnalyzing ? '0px 0px 8px #0d6efd' : 'none',
+                  }}
+                />
+              </div>
             </Form.Group>
+
+            {/* ✅ Summary section */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', marginBottom: '15px' }}>
+              {linesAnalyzed > 0 && (
+                <div style={{ fontWeight: '500', color: '#333' }}>
+                  📄 Lines Analyzed: {linesAnalyzed}
+                </div>
+              )}
+
+              {isAnalyzing && (
+                <div style={{ fontWeight: '500', color: '#0d6efd' }}>
+                  ⏳ Timer: {timer}s
+                </div>
+              )}
+
+              {analysisTime && (
+                <div style={{ fontWeight: '500', color: '#333' }}>
+                  ⏱️ Analysis Time: {analysisTime}s
+                </div>
+              )}
+            </div>
+
             <Button
               variant="success"
               type="submit"
@@ -118,34 +161,14 @@ const CodeAnalyzer = () => {
           </Form>
         </Col>
       </Row>
+
       {analysisResult && (
-        <Row className="mt-4">
-          <Col>
-            <h3>Analysis Result</h3>
-            <p
-              style={{
-                color: analysisResult.includes('Vulnerabilities') ? 'red' : 'green',
-                fontWeight: 'bold',
-                fontSize: '18px',
-              }}
-            >
-              {analysisResult}
-            </p>
-            {analysisResult === 'No vulnerabilities detected' && (
-              <p style={{ fontSize: '16px', color: 'green', fontWeight: 'bold' }}>
-                🎉 Congratulations! Your code is free from attackers.
-              </p>
-            )}
-            {analysisResult.includes('Vulnerabilities') && (
-              <p style={{ fontSize: '16px', color: 'red', fontWeight: 'bold' }}>
-                ⚠️ Oops! Your code has some vulnerabilities. Please fix them before using it.
-              </p>
-            )}
-            {analysisTime && (
-              <p style={{ fontSize: '16px', color: '#555' }}>Analysis Time: {analysisTime}s</p>
-            )}
-          </Col>
-        </Row>
+        <AnalysisResults
+          total={analysisResult.total}
+          vulnerabilities={analysisResult.vulnerabilities}
+          linesAnalyzed={analysisResult.lines_analyzed}
+          processingTime={analysisTime}
+        />
       )}
     </Container>
   );

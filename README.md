@@ -26,13 +26,18 @@ The goal of this project is to automate the detection of vulnerabilities in open
 
 ## 📁 Project Structure
 
-```bash
+
 frontend/
-├── public              
-├── src/              
+
+├── public       
+├── src/    
+
 │   ├── assets
+
 │   ├── css
+
 │   ├── components/
+
 │   │   ├── About.js  
 │   │   ├── AnalysisResults.js  
 │   │   ├── AuthContext.js  
@@ -46,65 +51,80 @@ frontend/
 │   │   ├── Signup.js  
 
 backend/
+
 ├── routes/ 
+
 │   ├── authRoutes.js
+
 │   ├── codeRoutes.js
+
 ├── models/
+
 ├── .env              
 ├── index.js      
 
 integration/
-├── API access.ipynb            ← Experimental scripts
-├── main.py                     ← FastAPI server endpoint (/predict)
-├── model.py                    ← Contains model logic (AST + GNN)
-├── gnn_trained.pth             ← Trained model weights
-├── node_encoder.pt             ← Encoder used for AST node types
 
+├── API access.ipynb            
+├── main.py                     
+├── model.py                   
+├── gnn_trained.pth           
+├── node_encoder.pt            
+
+---
 
 ## 🚀 Installation & Setup Guide
 
 ### 1. 📦 Clone the Repository
 
-```bash
 git clone https://github.com/JohiChawla/OPEN-SOURCE-SOFTWARE-VULNERABILITIES-DETECTING.git
+
 cd OPEN-SOURCE-SOFTWARE-VULNERABILITIES-DETECTING
 
+---
 ### 2. ⚙️ Backend Setup (NodeJS)
 
-```bash
 cd backend
+
 npm install
 
 Create a .env file in the backend/ directory and add the following:
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/fypdb
-JWT_SECRET=your_jwt_secret
 
-```bash 
+- PORT=5000
+
+- MONGO_URI=mongodb://localhost:27017/fypdb
+
+- JWT_SECRET=your_jwt_secret
+
 npm start
 
+---
 
 ### 3. 💻 Frontend Setup (ReactJS)
 
-```bash
 cd frontend
+
 npm install
+
 npm start
 
 This will launch the app at: http://localhost:3000
 
+---
+
 ### 4. 🤖 AI Engine Setup (FastAPI + Python)
 
-```bash 
 cd integration
-pip install -r requirements.txt
+
 uvicorn main:app --reload --port 8000
 
+---
 
 ## 🔄 System Workflow
-- 1. User registers or logs in via the frontend.
 
-- 2. Uploads .c or .cpp source code.
+1. User registers or logs in via the frontend.
+
+2. Uploads .c or .cpp source code.
 
 3. Backend parses the code and generates an AST.
 
@@ -118,12 +138,39 @@ uvicorn main:app --reload --port 8000
 
 8. Data is saved in MongoDB for future access.
 
+---
+
 ## 📊 Example Use Case
-A developer uploads a C code file.
 
-The system detects a potential buffer overflow on line 27.
+- A developer uploads a C code file.
 
-The CVE integration returns that this matches CVE-2023-XXXXX.
+- The system detects a potential buffer overflow on line 27.
 
-The user is notified of the vulnerability severity and suggestions.
+- The CVE integration returns that this matches CVE-2023-XXXXX.
 
+- The user is notified of the vulnerability severity and suggestions.
+
+---
+
+## 👨‍🎓 Authors
+
+Johi Chawla – Full Stack Developer / AI Engineer
+
+Supervisor Name – Dr. Javed Shahani
+
+Institute Name – Sukkur IBA University
+
+---
+## 🧾 License
+
+This project is licensed under the MIT License – for academic and learning purposes only.
+
+---
+## 📬 Contact
+📧 Email: johichawala33@gmail.com
+
+🌐 LinkedIn: https://www.linkedin.com/in/johi-chawla-~jc-55648a267/
+
+
+
+>>>>>>> aae1a7ae787f03c5feadb587fccdafb2777b44c9

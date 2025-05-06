@@ -9,7 +9,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # your React frontend
+    allow_origins=["https://open-source-software-vulnerabilities-detecting-phww.vercel.app/"],  # your React frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
